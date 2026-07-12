@@ -200,6 +200,62 @@ function renameProjectFiles(prefix) {
   }
 }
 
+function findSolutionFilePath() {
+  const entries = fs.readdirSync(rootPath, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.isFile() && entry.name.endsWith('.sln')) {
+      return path.join(rootPath, entry.name);
+    }
+  }
+  return null;
+}
+
+function addOrUpdateProjectGuid(filePath, guid) {
+  let content = fs.readFileSync(filePath, 'utf8');
+  const projectGuidRegex = /<ProjectGuid>\s*{[A-F0-9-]+}\s*<\/ProjectGuid>/i;
+
+  if (projectGuidRegex.test(content)) {
+    content = content.replace(projectGuidRegex, `<ProjectGuid>${guid}</ProjectGuid>`);
+  } else {
+    content = content.replace(/<\/PropertyGroup>/i, `    <ProjectGuid>${guid}</ProjectGuid>\n  </PropertyGroup>`);
+  }
+
+  fs.writeFileSync(filePath, content, 'utf8');
+}
+
+function regenerateProjectGuids(prefix) {
+  const slnPath = findSolutionFilePath();
+  if (!slnPath) return;
+
+  let content = fs.readFileSync(slnPath, 'utf8');
+  const projectRegex = /Project\("({[A-F0-9-]+})"\)\s*=\s*"([^"]+)",\s*"([^"]+)",\s*"({[A-F0-9-]+})"/g;
+  const projects = [];
+  let match;
+
+  while ((match = projectRegex.exec(content)) !== null) {
+    projects.push({
+      typeGuid: match[1],
+      name: match[2],
+      path: match[3],
+      oldGuid: match[4],
+      newGuid: `{${crypto.randomUUID()}}`
+    });
+  }
+
+  for (const project of projects) {
+    content = content.split(project.oldGuid).join(project.newGuid);
+  }
+
+  fs.writeFileSync(slnPath, content, 'utf8');
+
+  for (const project of projects) {
+    const projectFilePath = path.join(rootPath, project.path);
+    if (fs.existsSync(projectFilePath)) {
+      addOrUpdateProjectGuid(projectFilePath, project.newGuid);
+    }
+  }
+}
+
 function renameSolutionFile(prefix) {
   const entries = fs.readdirSync(rootPath, { withFileTypes: true });
   for (const entry of entries) {
@@ -364,6 +420,7 @@ function setupTask() {
   replaceInPlace(prefix, prefixLower, ignoreRules);
   renameRootFolders(prefix);
   renameProjectFiles(prefix);
+  regenerateProjectGuids(prefix);
   renameSolutionFile(prefix);
   updateConfigFiles(args, prefix);
   console.log('Solution customized successfully.');
