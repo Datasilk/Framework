@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableDelayedExpansion
+setlocal
 
 echo =====================================================
 echo  Datasilk Framework Solution Customizer
@@ -21,7 +21,7 @@ echo.
 set /p PGUSER="PostgreSQL username (default: postgres): "
 if "%PGUSER%"=="" set PGUSER=postgres
 
-for /f "delims=" %%a in ('powershell -Command "$p=Read-Host -AsSecureString 'PostgreSQL password (default: password)'; [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($p))"') do set PGPASSWORD=%%a
+for /f "delims=" %%a in ('powershell -Command "$p=Read-Host -AsSecureString 'PostgreSQL password (default: password)'; [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($p))"') do set "PGPASSWORD=%%a"
 if "%PGPASSWORD%"=="" set PGPASSWORD=password
 
 echo.
