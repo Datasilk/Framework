@@ -66,14 +66,14 @@ if "%REACTPORT_TEST%" NEQ "%REACTPORT%" (
 echo.
 echo Customizing current solution with prefix %PREFIX%...
 
-npm install
+call npm install
 if %ERRORLEVEL% neq 0 (
     echo.
     echo Failed to install root tooling dependencies.
     exit /b %ERRORLEVEL%
 )
 
-npx gulp setup --prefix "%PREFIX%" --database "%DBNAME%" --pguser "%PGUSER%" --pgpassword "%PGPASSWORD%" --api-http-port "%APIHTTPPORT%" --api-https-port "%APIHTTPSPORT%" --react-port "%REACTPORT%" --use-http "%USEHTTP%" --default-from-email "%FROMEMAIL%" --default-from-name "%FROMNAME%"
+call npx gulp setup --prefix "%PREFIX%" --database "%DBNAME%" --pguser "%PGUSER%" --pgpassword "%PGPASSWORD%" --api-http-port "%APIHTTPPORT%" --api-https-port "%APIHTTPSPORT%" --react-port "%REACTPORT%" --use-http "%USEHTTP%" --default-from-email "%FROMEMAIL%" --default-from-name "%FROMNAME%"
 
 if %ERRORLEVEL% neq 0 (
     echo.
@@ -88,7 +88,7 @@ set "CLIENT_DIR=%~dp0%PREFIX%.Web.Client"
 if not exist "%CLIENT_DIR%" set "CLIENT_DIR=%~dp0Datasilk.Web.Client"
 
 pushd "%CLIENT_DIR%"
-npm install
+call npm install
 if %ERRORLEVEL% neq 0 (
     echo.
     echo Failed to install web client dependencies.
@@ -104,7 +104,7 @@ set "SQL_DIR=%~dp0%PREFIX%.SQL"
 if not exist "%SQL_DIR%" set "SQL_DIR=%~dp0Datasilk.SQL"
 
 pushd "%SQL_DIR%"
-npm install
+call npm install
 if %ERRORLEVEL% neq 0 (
     echo.
     echo Failed to install SQL tooling dependencies.
@@ -112,7 +112,7 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-npx gulp
+call npx gulp
 if %ERRORLEVEL% neq 0 (
     echo.
     echo Failed to generate deploy.sql.
