@@ -66,6 +66,13 @@ if "%REACTPORT_TEST%" NEQ "%REACTPORT%" (
 echo.
 echo Customizing current solution with prefix %PREFIX%...
 
+npm install
+if %ERRORLEVEL% neq 0 (
+    echo.
+    echo Failed to install root tooling dependencies.
+    exit /b %ERRORLEVEL%
+)
+
 npx gulp setup --prefix "%PREFIX%" --database "%DBNAME%" --pguser "%PGUSER%" --pgpassword "%PGPASSWORD%" --api-http-port "%APIHTTPPORT%" --api-https-port "%APIHTTPSPORT%" --react-port "%REACTPORT%" --use-http "%USEHTTP%" --default-from-email "%FROMEMAIL%" --default-from-name "%FROMNAME%"
 
 if %ERRORLEVEL% neq 0 (
