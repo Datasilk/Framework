@@ -125,7 +125,7 @@ echo Creating database and deploying schema...
 
 set "PGPASSWORD=%PGPASSWORD%"
 
-psql -h localhost -U %PGUSER% -c "SELECT 'CREATE DATABASE %DBNAME%' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '%DBNAME%')\gexec"
+psql -h localhost -U %PGUSER% -tc "SELECT 'CREATE DATABASE %DBNAME%' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '%DBNAME%')" | psql -h localhost -U %PGUSER%
 if %ERRORLEVEL% neq 0 (
     echo.
     echo Failed to create database.
