@@ -182,6 +182,24 @@ function renameRootFolders(prefix) {
   }
 }
 
+function renameProjectFiles(prefix) {
+  const entries = fs.readdirSync(rootPath, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const dirPath = path.join(rootPath, entry.name);
+    const files = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const file of files) {
+      if (!file.isFile()) continue;
+      if (!file.name.endsWith('.csproj') && !file.name.endsWith('.esproj')) continue;
+      if (!file.name.includes(sourceName)) continue;
+      const oldPath = path.join(dirPath, file.name);
+      const newName = file.name.replace(sourceName, prefix);
+      const newPath = path.join(dirPath, newName);
+      fs.renameSync(oldPath, newPath);
+    }
+  }
+}
+
 function renameSolutionFile(prefix) {
   const entries = fs.readdirSync(rootPath, { withFileTypes: true });
   for (const entry of entries) {
@@ -345,6 +363,7 @@ function setupTask() {
   const ignoreRules = collectGitignoreRules();
   replaceInPlace(prefix, prefixLower, ignoreRules);
   renameRootFolders(prefix);
+  renameProjectFiles(prefix);
   renameSolutionFile(prefix);
   updateConfigFiles(args, prefix);
   console.log('Solution customized successfully.');
