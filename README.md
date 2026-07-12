@@ -2,6 +2,18 @@
 
 This is a template web application solution for the Datasilk stack. It contains a .NET API, authentication library, Dapper data access layer, PostgreSQL schema, and a React + Vite + TailwindCSS web client.
 
+## Quick Start
+
+You can go from `git clone` to a running local dashboard in **less than 60 seconds**:
+
+```bash
+git clone https://github.com/Datasilk/Framework
+cd Framework
+setup.bat
+```
+
+`setup.bat` prompts for a project prefix, PostgreSQL credentials, ports, and SendGrid defaults, then handles renaming, dependency installs, database creation, and schema deployment automatically. After it finishes, run the API server and Vite dev proxy, create the first admin account, and log into the dashboard.
+
 ## Projects
 
 - **Datasilk.API** - ASP.NET Core API controllers. Contains user management APIs.
@@ -50,7 +62,7 @@ This is a template web application solution for the Datasilk stack. It contains 
    - Generates `<Prefix>.SQL/deploy.sql` from the schema files.
    - Creates the PostgreSQL database if it does not exist and runs `deploy.sql` to deploy the schema.
 
-3. Build and run the solution:
+3. Build and run the solution (this takes a few seconds):
 
    - Open `<Prefix>.sln` in Visual Studio and start the **Web.Server** project.
    - Or run from the command line:
@@ -59,6 +71,8 @@ This is a template web application solution for the Datasilk stack. It contains 
      cd <Prefix>.Web.Server
      dotnet run
      ```
+
+   The first account you create is automatically promoted to admin, so you can sign up at the landing page and log straight into the dashboard.
 
 4. The web client is served by the .NET SPA proxy. If you need to run Vite directly for development, run from the web client folder:
 

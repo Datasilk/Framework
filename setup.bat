@@ -138,4 +138,12 @@ popd
 
 echo.
 echo Solution customized successfully.
+
+set "SLN_FILE=%~dp0%PREFIX%.sln"
+if not exist "%SLN_FILE%" set "SLN_FILE=%~dp0Datasilk.sln"
+
+if exist "%SLN_FILE%" (
+    start "" "%SLN_FILE%"
+)
+
 pause
